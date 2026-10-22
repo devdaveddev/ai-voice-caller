@@ -1,0 +1,39 @@
+{
+  "bots": {
+    "loan": {
+      "prompt_file": "prompts/loan.txt",
+      "greeting": "नमस्ते {{customer_name}} जी, मैं {{agent_name}} बोल रही हूँ {{company_name}} से। क्या अभी दो मिनट बात कर सकते हैं?",
+      "checkin": "हैलो, क्या आप मुझे सुन पा रहे हैं?",
+      "placeholders": {
+        "agent_name": "Priya",
+        "company_name": "QuickFin Finance",
+        "customer_name": "Rahul",
+        "loan_amount": "50,000",
+        "emi_amount": "4,200",
+        "due_date": "5th of this month",
+        "overdue_days": "12",
+        "late_fee": "350"
+      }
+    },
+    "insurance": {
+      "prompt_file": "prompts/insurance.txt",
+      "greeting": "नमस्ते {{customer_name}} जी, मैं {{agent_name}} बोल रही हूँ {{company_name}} से। क्या आपसे अभी दो मिनट बात हो सकती है?",
+      "checkin": "हैलो, क्या आप लाइन पर हैं?",
+      "placeholders": {
+        "agent_name": "Anjali",
+        "company_name": "SafeLife Insurance",
+        "customer_name": "Rahul",
+        "policy_type": "term life",
+        "policy_number": "SL-48213",
+        "premium_amount": "12,000",
+        "premium_due_date": "30th of this month",
+        "grace_days": "15"
+      }
+    }
+  },
+  "fallback_lines": {
+    "stt_error": "माफ़ कीजिए, आवाज़ साफ़ नहीं आई। क्या आप दोबारा बोल सकते हैं?",
+    "llm_error": "एक सेकंड, मुझे थोड़ी दिक्कत आ रही है। क्या आप दोबारा बता सकते हैं?",
+    "goodbye": "ठीक है, आपके समय के लिए धन्यवाद। नमस्ते।"
+  }
+}
