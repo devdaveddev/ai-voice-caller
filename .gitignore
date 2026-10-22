@@ -6,3 +6,4 @@ recordings/*
 !recordings/.gitkeep
 logs/*
 !logs/.gitkeep
+demo_out/

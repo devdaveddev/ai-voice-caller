@@ -31,6 +31,11 @@ pytest -q                            # unit + fake end-to-end websocket test
 ```
 Edit `prompts/*.txt`, `prompts/common.txt` (shared voice rules) and `config.json` (placeholders, greeting, fallback lines).
 
+## Demo without a phone line
+`python demo.py --bot loan` - type as the customer; the bot replies and each sentence is spoken with Sarvam TTS (saved to `demo_out/`, played if `paplay`/`aplay`/`ffplay` exists). Falls back to text-only if TTS is unavailable.
+
+LLM choice via `LLM_PROVIDER` in `.env`: `anthropic` (default), `ollama` (local; set `OLLAMA_MODEL`; needs a machine that can run it), or `mock` (offline canned replies).
+
 ## Output per call (`./recordings`)
 `<timestamp>_<bot>_<CallSid>.wav` (dual channel; arrives after the call), `.txt` transcript, `.json` (outcome: committed/date/amount/refused, end reason, average latency, transcript). Per-turn latency (STT, LLM first token, TTS first audio) is logged.
 

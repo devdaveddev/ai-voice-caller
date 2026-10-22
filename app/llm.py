@@ -55,6 +55,35 @@ class AnthropicLLM:
         return json.loads(m.group(0)) if m else {"error": "unparseable", "raw": text}
 
 
+class OllamaLLM:
+    """Local Ollama model via /api/chat streaming (OLLAMA_URL, OLLAMA_MODEL)."""
+
+    def __init__(self):
+        import httpx
+        self.client = httpx.AsyncClient(timeout=httpx.Timeout(60, connect=5))
+        self.url = env("OLLAMA_URL", "http://localhost:11434").rstrip("/")
+        self.model = env("OLLAMA_MODEL", "qwen2.5:1.5b")
+
+    async def stream(self, system: str, messages: list[dict]) -> AsyncIterator[str]:
+        body = {"model": self.model, "stream": True, "options": {"num_predict": 160, "temperature": 0.6},
+                "messages": [{"role": "system", "content": system}, *_merge_roles(messages)]}
+        async with self.client.stream("POST", f"{self.url}/api/chat", json=body) as r:
+            r.raise_for_status()
+            async for line in r.aiter_lines():
+                if line:
+                    chunk = json.loads(line)
+                    if text := chunk.get("message", {}).get("content"):
+                        yield text
+
+    async def extract_outcome(self, transcript: str) -> dict:
+        body = {"model": self.model, "stream": False, "format": "json",
+                "messages": [{"role": "system", "content": OUTCOME_PROMPT},
+                             {"role": "user", "content": transcript or "(empty call)"}]}
+        r = await self.client.post(f"{self.url}/api/chat", json=body)
+        r.raise_for_status()
+        return json.loads(r.json()["message"]["content"])
+
+
 class MockLLM:
     """Offline stand-in (LLM_PROVIDER=mock) for plumbing tests. Not a real conversation."""
 
@@ -76,4 +105,5 @@ class MockLLM:
 
 
 def make_llm():
-    return MockLLM() if env("LLM_PROVIDER") == "mock" else AnthropicLLM()
+    provider = env("LLM_PROVIDER", "anthropic")
+    return {"mock": MockLLM, "ollama": OllamaLLM}.get(provider, AnthropicLLM)()
